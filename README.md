@@ -1,2 +1,4 @@
-# cookbook-mha-helper
-Chef cookbook to configure and install MHA Helper
+# mha-helper
+
+TODO: Enter the cookbook description here.
+
