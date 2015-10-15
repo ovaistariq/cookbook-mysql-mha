@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: mha-helper
+# Cookbook Name:: mysql-mha
 # Recipe:: default
 #
 # Copyright (c) 2015 Ovais Tariq <me@ovaistariq.net>, All Rights Reserved.

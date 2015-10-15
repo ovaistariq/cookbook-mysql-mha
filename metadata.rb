@@ -1,4 +1,4 @@
-name             'mha-helper'
+name             'mysql-mha'
 maintainer       'Ovais Tariq'
 maintainer_email 'me@ovaistariq.net'
 license          'Apache 2.0'

@@ -13,5 +13,5 @@ platforms:
 suites:
   - name: default
     run_list:
-      - recipe[mha-helper::default]
+      - recipe[mysql-mha::default]
     attributes:
