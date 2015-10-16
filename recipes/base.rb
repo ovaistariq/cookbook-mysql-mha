@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: mysql-mha
-# Recipe:: node
+# Recipe:: base
 #
 # Copyright 2015, Ovais Tariq <me@ovaistariq.net>
 #
@@ -17,15 +17,15 @@
 # limitations under the License.
 #
 
-include_recipe "mysql-mha::base"
+include_recipe "yum-epel"
 
-node["mysql_mha"]["node"]["additional_packages"].each do |pkg|
-  package pkg do
-    action :install
+# Setup the repository
+packagecloud_repo node["mysql_mha"]["repo"]["prod"] do
+  case node["platform_family"]
+  when "debian"
+    type "deb"
+  when "rhel", "fedora"
+    type "rpm"
+    priority 9
   end
-end
-
-package node["mysql_mha"]["node"]["package"] do
-  version node["mysql_mha"]["node"]["version"]
-  action :install
 end

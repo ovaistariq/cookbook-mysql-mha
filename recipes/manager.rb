@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: mysql-mha
-# Recipe:: node
+# Recipe:: manager
 #
 # Copyright 2015, Ovais Tariq <me@ovaistariq.net>
 #
@@ -17,15 +17,17 @@
 # limitations under the License.
 #
 
+# The manager needs the node package to be installed as well
 include_recipe "mysql-mha::base"
+include_recipe "mysql-mha::node"
 
-node["mysql_mha"]["node"]["additional_packages"].each do |pkg|
+node["mysql_mha"]["manager"]["additional_packages"].each do |pkg|
   package pkg do
     action :install
   end
 end
 
-package node["mysql_mha"]["node"]["package"] do
-  version node["mysql_mha"]["node"]["version"]
+package node["mysql_mha"]["manager"]["package"] do
+  version node["mysql_mha"]["manager"]["version"]
   action :install
 end
