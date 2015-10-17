@@ -8,6 +8,7 @@ version          '0.1.0'
 
 depends 'packagecloud'
 depends 'yum-epel', '<= 0.6.0'
+depends 'zap', '>= 0.6.0'
 
 supports 'centos', '>= 5.10'
 supports 'redhat', '>= 5.10'

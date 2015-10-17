@@ -40,14 +40,21 @@ package node["mysql_mha"]["manager"]["package"] do
   action :install
 end
 
-directory node['mysql_mha']['config_dir'] do
+directory node['mysql_mha']['manager']['config_dir'] do
   owner 'root'
   group 'root'
   mode 0755
   action :create
 end
 
-directory node['mysql_mha']['helper_config_dir'] do
+directory node['mysql_mha']['manager']['helper_config_dir'] do
+  owner 'root'
+  group 'root'
+  mode 0755
+  action :create
+end
+
+directory node['mysql_mha']['manager']['working_dir_base'] do
   owner 'root'
   group 'root'
   mode 0755
@@ -57,3 +64,81 @@ end
 # Setup configuration
 mysql_pods = get_mysql_pods()
 pp mysql_pods
+
+mysql_pods.each do |pod_config|
+  next if pod_config['nodes'].empty?
+
+  pod_name = pod_config['id']
+
+  # These are the MHA and MHA Helper configuration files, one per each MySQL pod
+  mha_config_file = ::File.join(node['mysql_mha']['manager']['config_dir'], "#{pod_name}.conf")
+  mha_helper_config_file = ::File.join(node['mysql_mha']['manager']['helper_config_dir'], "#{pod_name}.conf")
+
+  # The directory and log used by MHA to log what it is doing
+  manager_workdir = ::File.join(node['mysql_mha']['manager']['working_dir_base'], pod_name)
+  manager_log = ::File.join(node['mysql_mha']['manager']['working_dir_base'], pod_name, "#{pod_name}.log")
+
+  directory manager_workdir do
+    owner 'root'
+    group 'root'
+    mode 0755
+    action :create
+  end
+
+  file manager_log do
+    owner 'root'
+    group 'root'
+    mode 0644
+    action :create_if_missing
+  end
+
+  # The working directory on the remote nodes being managed by MHA
+  remote_workdir = ::File.join(node['mysql_mha']['manager']['working_dir_base'], pod_name)
+
+  # Now we build the INI config file, one per each pod
+  # We start off the config with the section [server default]
+  mha_config_ini = IniFile.new
+  mha_config_ini['server default']['user']                            = pod_config['mysql']['user']
+  mha_config_ini['server default']['password']                        = ''
+  mha_config_ini['server default']['ssh_user']                        = pod_config['remote_user']['id']
+  mha_config_ini['server default']['repl_user']                       = pod_config['mysql']['repl_user']
+  mha_config_ini['server default']['repl_password']                   = ''
+  mha_config_ini['server default']['remote_workdir']                  = remote_workdir
+  mha_config_ini['server default']['manager_workdir']                 = manager_workdir
+  mha_config_ini['server default']['manager_log']                     = manager_log
+  mha_config_ini['server default']['master_ip_failover_script']       = node['mysql_mha']['manager']['master_ip_failover_script']
+  mha_config_ini['server default']['master_ip_online_change_script']  = node['mysql_mha']['manager']['master_ip_online_change_script']
+  mha_config_ini['server default']['report_script']                   = node['mysql_mha']['manager']['report_script']
+
+  # Next we have a section per node in the pod [server1], [server2], ..., [serverN]
+  i = 0
+  pod_config['nodes'].each do |mysql_node|
+    i += 1
+    server_name = "server#{i}"
+    mha_config_ini[server_name]['hostname']           = mysql_node['fqdn']
+    mha_config_ini[server_name]['ip']                 = mysql_node['ipaddress']
+    mha_config_ini[server_name]['port']               = mysql_node['mysql_mha']['node']['mysql_port']
+    mha_config_ini[server_name]['master_binlog_dir']  = mysql_node['mysql_mha']['node']['mysql_binlog_dir']
+    mha_config_ini[server_name]['ssh_port']           = mysql_node['mysql_mha']['node']['ssh_port']
+    mha_config_ini[server_name]['candidate_master']   = mysql_node['mysql_mha']['node']['candidate_master']
+    mha_config_ini[server_name]['no_master']          = mysql_node['mysql_mha']['node']['no_master']
+    mha_config_ini[server_name]['check_repl_delay']   = mysql_node['mysql_mha']['node']['check_repl_delay']
+  end
+
+  file mha_config_file do
+    content mha_config_ini.to_s
+    owner 'root'
+    group 'root'
+    mode 0644
+    action :create
+  end
+end
+
+
+zap_directory node['mysql_mha']['manager']['config_dir'] do
+  pattern '*.conf'
+end
+
+zap_directory node['mysql_mha']['manager']['helper_config_dir'] do
+  pattern '*.conf'
+end

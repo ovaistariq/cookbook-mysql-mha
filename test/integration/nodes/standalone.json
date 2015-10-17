@@ -6,7 +6,9 @@
     ]
   },
   "automatic": {
-    "ipaddress": "192.168.30.10"
+    "ipaddress": "192.168.30.10",
+    "hostname": "standalone",
+    "fqdn": "standalone.localhost"
   },
   "run_list": []
 }

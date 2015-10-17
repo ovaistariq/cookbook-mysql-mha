@@ -69,10 +69,17 @@ default['mysql_mha']['monitored_environments'] = []
 default['mysql_mha']['config_databag'] = 'mysql_mha_config'
 default['mysql_mha']['secrets_databag'] = 'mysql_mha_secrets'
 
-default['mysql_mha']['config_dir'] = '/etc/mha'
-default['mysql_mha']['helper_config_dir'] = '/etc/mha-helper'
+default['mysql_mha']['manager']['config_dir'] = '/etc/mha'
+default['mysql_mha']['manager']['helper_config_dir'] = '/etc/mha-helper'
 
 default['mysql_mha']['manager']['working_dir_base'] = '/var/log/mha'
 default['mysql_mha']['manager']['master_ip_failover_script'] = '/usr/bin/master_ip_hard_failover_helper'
 default['mysql_mha']['manager']['master_ip_online_change_script'] = '/usr/bin/master_ip_online_failover_helper'
 default['mysql_mha']['manager']['report_script'] = '/usr/bin/master_failover_report'
+
+default['mysql_mha']['node']['candidate_master'] = '0'
+default['mysql_mha']['node']['no_master'] = '0'
+default['mysql_mha']['node']['check_repl_delay'] = '1'
+default['mysql_mha']['node']['mysql_port'] = '3306'
+default['mysql_mha']['node']['ssh_port'] = '22'
+default['mysql_mha']['node']['mysql_binlog_dir'] = '/var/lib/mysql'

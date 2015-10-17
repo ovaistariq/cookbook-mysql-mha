@@ -5,9 +5,9 @@
     "user": "mha",
     "repl_user": "repl"
   },
-  "user": {
+  "remote_user": {
     "id": "mha",
-    "comment": "user used by MHA",
+    "comment": "user used by MHA to login to managed nodes",
     "home": "/home/mha",
     "uid": "10011",
     "groups": ["mysql"],

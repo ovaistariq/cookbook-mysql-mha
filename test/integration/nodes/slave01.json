@@ -8,12 +8,19 @@
     ],
     "mysql_mha": {
       "pod_name": "test_pod",
-      "candidate_master": true,
-      "check_replication_delay": false
+      "node": {
+        "candidate_master": "1",
+        "check_repl_delay": "0",
+        "mysql_port": "3306",
+        "mysql_binlog_dir": "/var/log/mysql",
+        "ssh_port": "22"
+      }
     }
   },
   "automatic": {
-    "ipaddress": "192.168.30.12"
+    "ipaddress": "192.168.30.12",
+    "hostname": "slave01",
+    "fqdn": "slave01.localhost"
   },
   "run_list": []
 }
