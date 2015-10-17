@@ -58,3 +58,21 @@ default["mysql_mha"]["repo"]["develop"] = value_for_platform(
     'default' => 'twindb/amzn_develop'
   }
 )
+
+## Configuration
+# Allow a MHA manager server to monitor MySQL servers in multiple environments
+# By default only the nodes in the same chef environment as the manager node
+# are monitored
+default['mysql_mha']['multi_environment_monitoring'] = false
+default['mysql_mha']['monitored_environments'] = []
+
+default['mysql_mha']['config_databag'] = 'mysql_mha_config'
+default['mysql_mha']['secrets_databag'] = 'mysql_mha_secrets'
+
+default['mysql_mha']['config_dir'] = '/etc/mha'
+default['mysql_mha']['helper_config_dir'] = '/etc/mha-helper'
+
+default['mysql_mha']['manager']['working_dir_base'] = '/var/log/mha'
+default['mysql_mha']['manager']['master_ip_failover_script'] = '/usr/bin/master_ip_hard_failover_helper'
+default['mysql_mha']['manager']['master_ip_online_change_script'] = '/usr/bin/master_ip_online_failover_helper'
+default['mysql_mha']['manager']['report_script'] = '/usr/bin/master_failover_report'

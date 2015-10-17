@@ -15,8 +15,6 @@ suites:
     run_list:
       - recipe[mysql-mha::manager]
     attributes:
-
-  - name: node
-    run_list:
-      - recipe[mysql-mha::node]
-    attributes:
+    provisioner:
+      client_rb:
+        environment: prod

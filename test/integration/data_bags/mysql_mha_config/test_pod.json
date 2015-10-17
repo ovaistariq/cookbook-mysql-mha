@@ -1,0 +1,22 @@
+{
+  "id": "test_pod",
+  "comment": "MHA replication pod 'test_pod' configuration",
+  "mysql": {
+    "user": "mha",
+    "repl_user": "repl"
+  },
+  "user": {
+    "id": "mha",
+    "comment": "user used by MHA",
+    "home": "/home/mha",
+    "uid": "10011",
+    "groups": ["mysql"],
+    "ssh_keys": [
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWMgpnlurHG8qL5PzT7EZ1Ka6Wb9EHd4YxlAQ99Mtnu7CovBik4ooj9UUnhuQHYkvegpC0ea0fLp6zNXUBCMakKIvdcHHhp5ADmoVq2tjRODuoLvEEb4Ta7rGz51hSmjelWptOzqYMkeUM2NZdR48OerwZS/q6UJeAXnhCo5bhUKLTjs+fc1fO6SrArk5SiYoKBfPzzqDHWX8LJ0Va/3MJig4MhTT/AnRwzbTVx+gJ3EG1UaemJcrYtbSUc9z+NFjWlJrRlN7eCVj8ux3i/qTMiu4C/1tAwdBIh+XNZZQd9bWxatDyGuZ0KrhI4SHvVQJe3YOoPaQ0GmH+35aCKue1 ovais.tariq@LT3228.local"
+    ]
+  },
+  "vip_type": "metal",
+  "writer_vip_cidr": "192.168.30.100/24",
+  "report_email": "ovaistariq@gmail.com",
+  "smtp_host": "localhost"
+}

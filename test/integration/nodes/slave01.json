@@ -1,0 +1,19 @@
+{
+  "name": "slave01",
+  "chef_environment": "prod",
+  "normal": {
+    "tags": [
+      "mha_managed",
+      "pod:test_pod"
+    ],
+    "mysql_mha": {
+      "pod_name": "test_pod",
+      "candidate_master": true,
+      "check_replication_delay": false
+    }
+  },
+  "automatic": {
+    "ipaddress": "192.168.30.12"
+  },
+  "run_list": []
+}
