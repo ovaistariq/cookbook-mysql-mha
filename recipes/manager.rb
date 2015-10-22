@@ -97,6 +97,7 @@ mysql_pods.each do |pod_config|
   # Setup the SSH private key file that is used by MHA manager to connect to
   # the nodes
   ssh_key_name = "id_mha_#{pod_name}_rsa"
+  ssh_key_path = get_ssh_dir_for_user('root')
   mysql_mha_sshkey 'mha ssh private key :create' do
     key_name ssh_key_name
     key_contents pod_config['remote_user']['ssh_private_key']
@@ -124,6 +125,8 @@ mysql_pods.each do |pod_config|
   # Next we have a section per node in the pod [server1], [server2], ..., [serverN]
   i = 0
   pod_config['nodes'].each do |mysql_node|
+    # Create the [server1], [server2], ..., [serverN] sections in INI file
+    # one per node in the pod
     i += 1
     server_name = "server#{i}"
     mha_config_ini[server_name]['hostname']           = mysql_node['fqdn']
@@ -134,6 +137,20 @@ mysql_pods.each do |pod_config|
     mha_config_ini[server_name]['candidate_master']   = mysql_node['mysql_mha']['node']['candidate_master']
     mha_config_ini[server_name]['no_master']          = mysql_node['mysql_mha']['node']['no_master']
     mha_config_ini[server_name]['check_repl_delay']   = mysql_node['mysql_mha']['node']['check_repl_delay']
+
+    # For each of the hosts we also add host keys to prevent prompts when the
+    # host is accessed for the first time
+    ssh_known_hosts mysql_node['fqdn'] do
+      hashed true
+      user 'root'
+    end
+
+    # For each of the hosts we add the remote user and ssh private key path
+    # to ssh config so that password-less SSH login works
+    ssh_config "github.com" do
+      options 'User' => pod_config['remote_user']['id'], 'IdentityFile' => ssh_key_path
+      user 'root'
+    end
   end
 
   file mha_config_file do

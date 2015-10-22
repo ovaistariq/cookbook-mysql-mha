@@ -7,6 +7,7 @@ long_description 'Installs/Configures MHA and MHA Helper'
 version          '0.1.0'
 
 depends 'packagecloud'
+depends 'ssh'
 depends 'yum-epel', '<= 0.6.0'
 depends 'zap', '>= 0.6.0'
 
