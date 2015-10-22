@@ -78,6 +78,7 @@ mysql_pods.each do |pod_config|
   manager_workdir = ::File.join(node['mysql_mha']['manager']['working_dir_base'], pod_name)
   manager_log = ::File.join(node['mysql_mha']['manager']['working_dir_base'], pod_name, "#{pod_name}.log")
 
+  # Working directory full path that MHA Manager generates related status files.
   directory manager_workdir do
     owner 'root'
     group 'root'
@@ -85,11 +86,21 @@ mysql_pods.each do |pod_config|
     action :create
   end
 
+  # Full path file name that MHA Manager generates logs.
   file manager_log do
     owner 'root'
     group 'root'
     mode 0644
     action :create_if_missing
+  end
+
+  # Setup the SSH private key file that is used by MHA manager to connect to
+  # the nodes
+  ssh_key_name = "id_mha_#{pod_name}_rsa"
+  mysql_mha_sshkey 'mha ssh private key :create' do
+    key_name ssh_key_name
+    key_contents pod_config['remote_user']['ssh_private_key']
+    username 'root'
   end
 
   # The working directory on the remote nodes being managed by MHA
@@ -135,6 +146,8 @@ mysql_pods.each do |pod_config|
 end
 
 
+# Keep the MHA Manager config directories cleaned up so that they only have
+# relevant configuration files
 zap_directory node['mysql_mha']['manager']['config_dir'] do
   pattern '*.conf'
 end
