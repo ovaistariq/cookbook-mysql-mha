@@ -34,6 +34,10 @@ class Chef
           pod_config = item.to_hash
           pod_name = pod_config['id']
 
+          pod_secrets = Chef::EncryptedDataBagItem.load(node['mysql_mha']['secrets_databag'], pod_name).to_hash
+          pod_config['mysql']['password'] = pod_secrets['mysql']['password']
+          pod_config['mysql']['repl_password'] = pod_secrets['mysql']['repl_password']
+
           # Find nodes that are part of this pod.
           # Search in all environments if multi_environment_monitoring is enabled.
           Chef::Log.info("Beginning search for nodes that belong to pod #{pod_name}.")

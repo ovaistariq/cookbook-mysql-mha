@@ -99,10 +99,10 @@ mysql_pods.each do |pod_config|
   # We start off the config with the section [server default]
   mha_config_ini = IniFile.new
   mha_config_ini['server default']['user']                            = pod_config['mysql']['user']
-  mha_config_ini['server default']['password']                        = ''
+  mha_config_ini['server default']['password']                        = pod_config['mysql']['password']
   mha_config_ini['server default']['ssh_user']                        = pod_config['remote_user']['id']
   mha_config_ini['server default']['repl_user']                       = pod_config['mysql']['repl_user']
-  mha_config_ini['server default']['repl_password']                   = ''
+  mha_config_ini['server default']['repl_password']                   = pod_config['mysql']['repl_password']
   mha_config_ini['server default']['remote_workdir']                  = remote_workdir
   mha_config_ini['server default']['manager_workdir']                 = manager_workdir
   mha_config_ini['server default']['manager_log']                     = manager_log

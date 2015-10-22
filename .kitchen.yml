@@ -12,8 +12,44 @@ platforms:
 
 suites:
   - name: manager
+    driver:
+      network:
+        - ["private_network", {ip: "192.168.30.10"}]
     run_list:
       - recipe[mysql-mha::manager]
+    attributes:
+    provisioner:
+      client_rb:
+        environment: prod
+
+  - name: master
+    driver:
+      network:
+        - ["private_network", {ip: "192.168.30.11"}]
+      vm_hostname: master.localhost
+    run_list:
+    attributes:
+    provisioner:
+      client_rb:
+        environment: prod
+
+  - name: slave01
+    driver:
+      network:
+        - ["private_network", {ip: "192.168.30.12"}]
+      vm_hostname: slave01.localhost
+    run_list:
+    attributes:
+    provisioner:
+      client_rb:
+        environment: prod
+
+  - name: slave02
+    driver:
+      network:
+        - ["private_network", {ip: "192.168.30.13"}]
+      vm_hostname: slave02.localhost
+    run_list:
     attributes:
     provisioner:
       client_rb:

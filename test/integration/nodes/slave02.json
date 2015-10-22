@@ -17,7 +17,7 @@
     }
   },
   "automatic": {
-    "ipaddress": "192.168.30.10",
+    "ipaddress": "192.168.30.13",
     "hostname": "slave02",
     "fqdn": "slave02.localhost"
   },
