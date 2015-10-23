@@ -6,6 +6,7 @@ driver:
 
 provisioner:
   name: chef_zero
+  encrypted_data_bag_secret_key_path: test/integration/encrypted_data_bag_secret
 
 platforms:
   - name: centos-6.6
@@ -28,7 +29,16 @@ suites:
         - ["private_network", {ip: "192.168.30.11"}]
       vm_hostname: master.localhost
     run_list:
+      - recipe[mysql-mha::node]
     attributes:
+      mysql_mha:
+        pod_name: "test_pod"
+        node:
+          candidate_master: 1
+          check_repl_delay: 0
+          mysql_port: 3306
+          mysql_binlog_dir: /var/lib/mysql
+          ssh_port: 22
     provisioner:
       client_rb:
         environment: prod
@@ -40,6 +50,14 @@ suites:
       vm_hostname: slave01.localhost
     run_list:
     attributes:
+      mysql_mha:
+        pod_name: "test_pod"
+        node:
+          candidate_master: 1
+          check_repl_delay: 0
+          mysql_port: 3306
+          mysql_binlog_dir: /var/log/mysql
+          ssh_port: 22
     provisioner:
       client_rb:
         environment: prod
@@ -51,6 +69,13 @@ suites:
       vm_hostname: slave02.localhost
     run_list:
     attributes:
+      mysql_mha:
+        pod_name: "test_pod"
+        node:
+          no_master: 1
+          mysql_port: 3307
+          mysql_binlog_dir: /var/log/mysql
+          ssh_port: 22
     provisioner:
       client_rb:
         environment: prod

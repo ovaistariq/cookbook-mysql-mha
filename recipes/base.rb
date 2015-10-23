@@ -29,3 +29,16 @@ packagecloud_repo node["mysql_mha"]["repo"]["prod"] do
     priority 9
   end
 end
+
+# The MHA node packages have to be installed on all the nodes including the
+# manager and the MySQL nodes
+node["mysql_mha"]["node"]["additional_packages"].each do |pkg|
+  package pkg do
+    action :install
+  end
+end
+
+package node["mysql_mha"]["node"]["package"] do
+  version node["mysql_mha"]["node"]["version"]
+  action :install
+end

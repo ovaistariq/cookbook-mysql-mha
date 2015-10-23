@@ -27,8 +27,8 @@ require 'pp'
 
 # The manager needs the node package to be installed as well
 include_recipe "mysql-mha::base"
-include_recipe "mysql-mha::node"
 
+# Manager specific packages
 node["mysql_mha"]["manager"]["additional_packages"].each do |pkg|
   package pkg do
     action :install
@@ -40,6 +40,7 @@ package node["mysql_mha"]["manager"]["package"] do
   action :install
 end
 
+# Tha MHA Manager config directory
 directory node['mysql_mha']['manager']['config_dir'] do
   owner 'root'
   group 'root'
@@ -47,6 +48,7 @@ directory node['mysql_mha']['manager']['config_dir'] do
   action :create
 end
 
+# The MHA Helper config directory
 directory node['mysql_mha']['manager']['helper_config_dir'] do
   owner 'root'
   group 'root'
@@ -54,6 +56,7 @@ directory node['mysql_mha']['manager']['helper_config_dir'] do
   action :create
 end
 
+# The directory used by MHA Manager as its working directory
 directory node['mysql_mha']['manager']['working_dir_base'] do
   owner 'root'
   group 'root'
@@ -61,7 +64,9 @@ directory node['mysql_mha']['manager']['working_dir_base'] do
   action :create
 end
 
-# Setup configuration
+## Setup configuration
+# The global configuration is read from the data bag while node specific
+# configuration is read from the node attributes
 mysql_pods = get_mysql_pods()
 pp mysql_pods
 
@@ -134,23 +139,23 @@ mysql_pods.each do |pod_config|
     mha_config_ini[server_name]['port']               = mysql_node['mysql_mha']['node']['mysql_port']
     mha_config_ini[server_name]['master_binlog_dir']  = mysql_node['mysql_mha']['node']['mysql_binlog_dir']
     mha_config_ini[server_name]['ssh_port']           = mysql_node['mysql_mha']['node']['ssh_port']
-    mha_config_ini[server_name]['candidate_master']   = mysql_node['mysql_mha']['node']['candidate_master']
-    mha_config_ini[server_name]['no_master']          = mysql_node['mysql_mha']['node']['no_master']
-    mha_config_ini[server_name]['check_repl_delay']   = mysql_node['mysql_mha']['node']['check_repl_delay']
+    mha_config_ini[server_name]['candidate_master']   = mysql_node['mysql_mha']['node']['candidate_master'] || node['mysql_mha']['node']['candidate_master']
+    mha_config_ini[server_name]['no_master']          = mysql_node['mysql_mha']['node']['no_master'] || node['mysql_mha']['node']['no_master']
+    mha_config_ini[server_name]['check_repl_delay']   = mysql_node['mysql_mha']['node']['check_repl_delay'] || node['mysql_mha']['node']['check_repl_delay']
 
     # For each of the hosts we also add host keys to prevent prompts when the
     # host is accessed for the first time
-    ssh_known_hosts mysql_node['fqdn'] do
-      hashed true
-      user 'root'
-    end
+    # ssh_known_hosts mysql_node['fqdn'] do
+    #   hashed true
+    #   user 'root'
+    # end
 
     # For each of the hosts we add the remote user and ssh private key path
     # to ssh config so that password-less SSH login works
-    ssh_config "github.com" do
-      options 'User' => pod_config['remote_user']['id'], 'IdentityFile' => ssh_key_path
-      user 'root'
-    end
+    # ssh_config mysql_node['fqdn'] do
+    #   options 'User' => pod_config['remote_user']['id'], 'IdentityFile' => ssh_key_path
+    #   user 'root'
+    # end
   end
 
   file mha_config_file do

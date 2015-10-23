@@ -59,6 +59,28 @@ class Chef
 
           mysql_pods << pod_config
         end
+
+        return mysql_pods
+      end
+
+      # Returns an array of MySQL pod config objects
+      def get_single_mysql_pod(pod_name)
+        # Loading the data bag configuration for a specifc pod
+        item = data_bag_item(node['mysql_mha']['config_databag'], pod_name)
+
+        if item.empty?
+          Chef::Log.info("No MySQL MHA config data bag found for the pod #{pod_name}")
+        end
+
+        pod_config = item.to_hash
+        pod_name = pod_config['id']
+
+        pod_secrets = Chef::EncryptedDataBagItem.load(node['mysql_mha']['secrets_databag'], pod_name).to_hash
+        pod_config['mysql']['password'] = pod_secrets['mysql']['password']
+        pod_config['mysql']['repl_password'] = pod_secrets['mysql']['repl_password']
+        pod_config['remote_user']['ssh_private_key'] = pod_secrets['remote_user']['ssh_private_key']
+
+        return pod_config
       end
 
       # Returns the SSH directory path for the given username
