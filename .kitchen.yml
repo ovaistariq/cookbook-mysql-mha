@@ -7,6 +7,20 @@ driver:
 provisioner:
   name: chef_zero
   encrypted_data_bag_secret_key_path: test/integration/encrypted_data_bag_secret
+  attributes:
+    hosts_list:
+      -
+        hostname: "manager.localhost"
+        ip: "192.168.30.10"
+      -
+        hostname: "master.localhost"
+        ip: "192.168.30.11"
+      -
+        hostname: "slave01.localhost"
+        ip: "192.168.30.12"
+      -
+        hostname: "slave02.localhost"
+        ip: "192.168.30.13"
 
 platforms:
   - name: centos-6.6
@@ -16,7 +30,9 @@ suites:
     driver:
       network:
         - ["private_network", {ip: "192.168.30.10"}]
+      vm_hostname: manager.localhost
     run_list:
+      - recipe[base_test_setup]
       - recipe[mysql-mha::manager]
     attributes:
     provisioner:
@@ -29,6 +45,7 @@ suites:
         - ["private_network", {ip: "192.168.30.11"}]
       vm_hostname: master.localhost
     run_list:
+      - recipe[base_test_setup]
       - recipe[mysql-mha::node]
     attributes:
       mysql_mha:
@@ -49,6 +66,8 @@ suites:
         - ["private_network", {ip: "192.168.30.12"}]
       vm_hostname: slave01.localhost
     run_list:
+      - recipe[base_test_setup]
+      - recipe[mysql-mha::node]
     attributes:
       mysql_mha:
         pod_name: "test_pod"
@@ -68,6 +87,8 @@ suites:
         - ["private_network", {ip: "192.168.30.13"}]
       vm_hostname: slave02.localhost
     run_list:
+      - recipe[base_test_setup]
+      - recipe[mysql-mha::node]
     attributes:
       mysql_mha:
         pod_name: "test_pod"
