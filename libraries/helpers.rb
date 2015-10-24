@@ -80,6 +80,24 @@ class Chef
         pod_config['mysql']['repl_password'] = pod_secrets['mysql']['repl_password']
         pod_config['remote_user']['ssh_private_key'] = pod_secrets['remote_user']['ssh_private_key']
 
+        # Find nodes that are part of this pod.
+        # Search in all environments if multi_environment_monitoring is enabled.
+        Chef::Log.info("Beginning search for nodes that belong to pod #{pod_name}.")
+
+        pod_config['nodes'] = []
+        multi_env = node['mysql_mha']['monitored_environments']
+        multi_env_search = multi_env.empty? ? '' : ' AND (chef_environment:' + multi_env.join(' OR chef_environment:') + ')'
+
+        if node['mysql_mha']['multi_environment_monitoring']
+          pod_config['nodes'] = search(:node, "mysql_mha_pod_name:#{pod_name}#{multi_env_search}")
+        else
+          pod_config['nodes'] = search(:node, "mysql_mha_pod_name:#{pod_name} AND chef_environment:#{node.chef_environment}")
+        end
+
+        if pod_config['nodes'].empty?
+          Chef::Log.info("No nodes returned from search that belog to pod #{pod_name}.")
+        end
+
         return pod_config
       end
 
