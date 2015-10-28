@@ -1,6 +1,6 @@
 #
-# Cookbook Name:: base_test_setup
-# Recipe:: default
+# Cookbook Name:: mysql_replication
+# Recipe:: client
 #
 # Copyright 2015, Ovais Tariq <me@ovaistariq.net>
 #
@@ -17,8 +17,6 @@
 # limitations under the License.
 #
 
-node['hosts_list'].each do |host|
-  hostsfile_entry host['ip'] do
-    hostname  host['hostname']
-  end
+mysql_client 'default' do
+  action :create
 end

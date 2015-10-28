@@ -33,6 +33,7 @@ suites:
       vm_hostname: manager.localhost
     run_list:
       - recipe[base_test_setup]
+      - recipe[mysql_replication::client]
       - recipe[mysql-mha::manager]
     attributes:
     provisioner:
