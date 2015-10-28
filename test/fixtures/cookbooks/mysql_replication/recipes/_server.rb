@@ -52,3 +52,6 @@ include_recipe "mysql_replication::replication_user"
 
 # Include the recipe that sets up the MHA user
 include_recipe "mysql_replication::mha_user"
+
+# Include the recipe that creates the test database used during testing
+include_recipe "mysql_replication::test_db"

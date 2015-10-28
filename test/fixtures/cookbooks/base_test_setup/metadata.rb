@@ -6,4 +6,5 @@ description      'Installs/Configures base_test_setup'
 long_description 'Installs/Configures base_test_setup'
 version          '0.1.0'
 
+depends 'build-essential', '~> 2.2.4'
 depends 'hostsfile'
