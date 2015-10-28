@@ -10,16 +10,16 @@ provisioner:
   attributes:
     hosts_list:
       -
-        hostname: "manager.localhost"
+        hostname: "manager"
         ip: "192.168.30.10"
       -
-        hostname: "master.localhost"
+        hostname: "master"
         ip: "192.168.30.11"
       -
-        hostname: "slave01.localhost"
+        hostname: "slave01"
         ip: "192.168.30.12"
       -
-        hostname: "slave02.localhost"
+        hostname: "slave02"
         ip: "192.168.30.13"
 
 platforms:
