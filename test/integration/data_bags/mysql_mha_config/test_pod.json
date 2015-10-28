@@ -18,5 +18,7 @@
   "vip_type": "metal",
   "writer_vip_cidr": "192.168.30.100/24",
   "report_email": "ovaistariq@gmail.com",
-  "smtp_host": "localhost"
+  "smtp_host": "localhost",
+  "requires_sudo": "yes",
+  "cluster_interface": "eth1"
 }

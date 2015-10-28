@@ -93,3 +93,10 @@ directory remote_workdir do
   mode 0755
   action :create
 end
+
+# Setup sudo access for the system user used by MHA Helper
+sudo pod_config['remote_user']['id'] do
+  user     pod_config['remote_user']['id']
+  nopasswd true
+  commands node['mysql_mha']['node']['sudo_cmds']
+end

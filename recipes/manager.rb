@@ -40,6 +40,11 @@ package node["mysql_mha"]["manager"]["package"] do
   action :install
 end
 
+package node["mysql_mha"]["helper"]["package"] do
+  version node["mysql_mha"]["helper"]["version"]
+  action :install
+end
+
 # Tha MHA Manager config directory
 directory node['mysql_mha']['manager']['config_dir'] do
   owner 'root'
@@ -112,7 +117,7 @@ mysql_pods.each do |pod_config|
   # The working directory on the remote nodes being managed by MHA
   remote_workdir = ::File.join(node['mysql_mha']['manager']['working_dir_base'], pod_name)
 
-  # Now we build the INI config file, one per each pod
+  # Now we build the MHA INI config file, one per each pod
   # We start off the config with the section [server default]
   mha_config_ini = IniFile.new
   mha_config_ini['server default']['user']                            = pod_config['mysql']['user']
@@ -127,6 +132,15 @@ mysql_pods.each do |pod_config|
   mha_config_ini['server default']['master_ip_online_change_script']  = node['mysql_mha']['manager']['master_ip_online_change_script']
   mha_config_ini['server default']['report_script']                   = node['mysql_mha']['manager']['report_script']
 
+  # Next we build the MHA Helper config file
+  mha_helper_config_ini = IniFile.new
+  mha_helper_config_ini['default']['writer_vip_cidr']   = pod_config['writer_vip_cidr']
+  mha_helper_config_ini['default']['vip_type']          = pod_config['vip_type']
+  mha_helper_config_ini['default']['report_email']      = pod_config['report_email']
+  mha_helper_config_ini['default']['smtp_host']         = pod_config['smtp_host']
+  mha_helper_config_ini['default']['requires_sudo']     = pod_config['requires_sudo']
+  mha_helper_config_ini['default']['cluster_interface'] = pod_config['cluster_interface']
+
   # Next we have a section per node in the pod [server1], [server2], ..., [serverN]
   i = 0
   pod_config['nodes'].each do |mysql_node|
@@ -134,7 +148,7 @@ mysql_pods.each do |pod_config|
     # one per node in the pod
     i += 1
     server_name = "server#{i}"
-    mha_config_ini[server_name]['hostname']           = mysql_node['fqdn']
+    mha_config_ini[server_name]['hostname']           = mysql_node['hostname']
     mha_config_ini[server_name]['ip']                 = mysql_node['ipaddress']
     mha_config_ini[server_name]['port']               = mysql_node['mysql_mha']['node']['mysql_port']
     mha_config_ini[server_name]['master_binlog_dir']  = mysql_node['mysql_mha']['node']['mysql_binlog_dir']
@@ -142,6 +156,10 @@ mysql_pods.each do |pod_config|
     mha_config_ini[server_name]['candidate_master']   = mysql_node['mysql_mha']['node']['candidate_master'] || node['mysql_mha']['node']['candidate_master']
     mha_config_ini[server_name]['no_master']          = mysql_node['mysql_mha']['node']['no_master'] || node['mysql_mha']['node']['no_master']
     mha_config_ini[server_name]['check_repl_delay']   = mysql_node['mysql_mha']['node']['check_repl_delay'] || node['mysql_mha']['node']['check_repl_delay']
+
+    # Right now we don't have anything in host specific sections in MHA
+    # Helper config so we just create empty sections in INI file
+    mha_helper_config_ini[mysql_node['hostname']] = Hash.new
 
     # For each of the hosts we also add host keys to prevent prompts when the
     # host is accessed for the first time
@@ -158,8 +176,18 @@ mysql_pods.each do |pod_config|
     end
   end
 
+  # Write the MHA config file for the replication cluster
   file mha_config_file do
     content mha_config_ini.to_s
+    owner 'root'
+    group 'root'
+    mode 0644
+    action :create
+  end
+
+  # Write the MHA Helper config file for the replication cluster
+  file mha_helper_config_file do
+    content mha_helper_config_ini.to_s
     owner 'root'
     group 'root'
     mode 0644

@@ -20,6 +20,7 @@
 # Packages
 default["mysql_mha"]["manager"]["package"] = 'mha4mysql-manager'
 default["mysql_mha"]["node"]["package"] = 'mha4mysql-node'
+default["mysql_mha"]["helper"]["package"] = 'python-mha_helper'
 
 default["mysql_mha"]["manager"]["version"] = value_for_platform(
   ['centos', 'redhat'] => {
@@ -36,6 +37,8 @@ default["mysql_mha"]["node"]["version"] = value_for_platform(
     '~> 7.0' => '0.57-0.el7'
   }
 )
+
+default["mysql_mha"]["helper"]["version"] = '0.4.0-1'
 
 default["mysql_mha"]["manager"]["additional_packages"] = %w(perl-Config-Tiny perl-Log-Dispatch perl-Parallel-ForkManager perl-Mail-Sendmail perl-Mail-Sender)
 default["mysql_mha"]["node"]["additional_packages"] = %w(perl-DBD-MySQL)
@@ -58,6 +61,10 @@ default["mysql_mha"]["repo"]["develop"] = value_for_platform(
     'default' => 'twindb/amzn_develop'
   }
 )
+
+# Sudoers handling to enable the MHA Helper user to be able to execute
+# commands using sudo when its a non-privileged user
+default['authorization']['sudo']['include_sudoers_d'] = true
 
 ## Configuration
 # Allow a MHA manager server to monitor MySQL servers in multiple environments
@@ -83,3 +90,4 @@ default['mysql_mha']['node']['check_repl_delay'] = '1'
 default['mysql_mha']['node']['mysql_port'] = '3306'
 default['mysql_mha']['node']['ssh_port'] = '22'
 default['mysql_mha']['node']['mysql_binlog_dir'] = '/var/lib/mysql'
+default['mysql_mha']['node']['sudo_cmds'] = ['/sbin/ip', '/sbin/arping']

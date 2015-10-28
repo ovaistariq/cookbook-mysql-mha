@@ -8,6 +8,7 @@ version          '0.1.0'
 
 depends 'packagecloud'
 depends 'ssh'
+depends 'sudo', '>= 2.7.1'
 depends 'user'
 depends 'yum-epel', '<= 0.6.0'
 depends 'zap', '>= 0.6.0'
