@@ -10,6 +10,7 @@ recipe 'mysql_replication::master',             'Installs and configures a MySQL
 recipe 'mysql_replication::slave',              'Installs and configures a MySQL server as a replication slave'
 recipe 'mysql_replication::replication_user',   'Configures replication users that are used by slaves to connect to master'
 recipe 'mysql_replication::_server',            'Installs and configures the MySQL server, should not be added to the runlist directly'
+recipe 'mysql_replication::client',             'Installs and configures the MySQL client'
 
 depends 'mysql', '~> 6.1.2'
 depends 'database'
