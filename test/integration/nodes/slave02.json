@@ -11,7 +11,7 @@
       "node": {
         "no_master": "1",
         "mysql_port": "3307",
-        "mysql_binlog_dir": "/var/log/mysql",
+        "mysql_binlog_dir": "/var/log/mysql-default",
         "ssh_port": "22"
       }
     }

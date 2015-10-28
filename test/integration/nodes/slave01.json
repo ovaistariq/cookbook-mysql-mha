@@ -12,7 +12,7 @@
         "candidate_master": "1",
         "check_repl_delay": "0",
         "mysql_port": "3306",
-        "mysql_binlog_dir": "/var/log/mysql",
+        "mysql_binlog_dir": "/var/log/mysql-default",
         "ssh_port": "22"
       }
     }

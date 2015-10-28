@@ -2,5 +2,6 @@ source "https://supermarket.chef.io"
 
 # Testing cookbook used by test-kitchen
 cookbook "base_test_setup", path: "test/fixtures/cookbooks/base_test_setup"
+cookbook "mysql_replication", path: "test/fixtures/cookbooks/mysql_replication"
 
 metadata
