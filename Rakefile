@@ -38,7 +38,7 @@ namespace :style do
 end
 
 desc "Run all style tests"
-task :style => ['style:rubocop', 'sytle:foodcritic']
+task :style => ['style:rubocop', 'style:foodcritic']
 
 # Integration tests. Kitchen.ci
 namespace :integration do

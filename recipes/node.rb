@@ -59,18 +59,13 @@ end
 
 # Add host keys to known_hosts and ssh auth params to ssh-config
 pod_config['nodes'].each do |mysql_node|
-  # For each of the hosts we also add host keys to prevent prompts when the
-  # host is accessed for the first time
-  ssh_known_hosts mysql_node['fqdn'] do
-    hashed true
-    user pod_config['remote_user']['id']
-  end
-
   # For each of the hosts we add the remote user and ssh private key path
   # to ssh config so that password-less SSH login works
-  ssh_config mysql_node['fqdn'] do
-    options 'User' => pod_config['remote_user']['id'], 'IdentityFile' => ssh_key_path
-    user pod_config['remote_user']['id']
+  [ mysql_node['hostname'], mysql_node['fqdn'], mysql_node['ipaddress'] ].each do |host|
+    ssh_config host do
+      options 'User' => pod_config['remote_user']['id'], 'IdentityFile' => ssh_key_path
+      user pod_config['remote_user']['id']
+    end
   end
 end
 

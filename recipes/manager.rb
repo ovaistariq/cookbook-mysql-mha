@@ -161,18 +161,13 @@ mysql_pods.each do |pod_config|
     # Helper config so we just create empty sections in INI file
     mha_helper_config_ini[mysql_node['hostname']] = Hash.new
 
-    # For each of the hosts we also add host keys to prevent prompts when the
-    # host is accessed for the first time
-    ssh_known_hosts mysql_node['fqdn'] do
-      hashed true
-      user 'root'
-    end
-
     # For each of the hosts we add the remote user and ssh private key path
     # to ssh config so that password-less SSH login works
-    ssh_config mysql_node['fqdn'] do
-      options 'User' => pod_config['remote_user']['id'], 'IdentityFile' => ssh_key_path
-      user 'root'
+    [ mysql_node['hostname'], mysql_node['fqdn'], mysql_node['ipaddress'] ].each do |host|
+      ssh_config host do
+        options 'User' => pod_config['remote_user']['id'], 'IdentityFile' => ssh_key_path
+        user 'root'
+      end
     end
   end
 
