@@ -12,6 +12,12 @@ class Chef
       # the list of known data bags.
       def get_data_bags(bag_name)
         results = []
+
+        if Chef::Config[:solo]
+          Chef::Log.warn('This recipe uses search. Chef Solo does not support search.')
+          return results
+        end
+
         if Chef::DataBag.list.include?(bag_name)
           Chef::Search::Query.new.search(bag_name.to_s, '*:*') { |rows| results << rows }
         else
@@ -22,14 +28,21 @@ class Chef
 
       # Returns an array of MySQL pod config objects
       def get_mysql_pods()
+        mysql_pods = []
+
+        if Chef::Config[:solo]
+          Chef::Log.warn('This recipe uses search. Chef Solo does not support search.')
+          return mysql_pods
+        end
+
         # Loading all databag information
         mysql_mha_bags = get_data_bags(node['mysql_mha']['config_databag'])
 
         if mysql_mha_bags.empty?
           Chef::Log.info('No MySQL MHA config data bag found')
+          return mysql_pods
         end
 
-        mysql_pods = []
         mysql_mha_bags.each do |item|
           pod_config = item.to_hash
           pod_name = pod_config['id']
@@ -85,13 +98,18 @@ class Chef
         Chef::Log.info("Beginning search for nodes that belong to pod #{pod_name}.")
 
         pod_config['nodes'] = []
-        multi_env = node['mysql_mha']['monitored_environments']
-        multi_env_search = multi_env.empty? ? '' : ' AND (chef_environment:' + multi_env.join(' OR chef_environment:') + ')'
 
-        if node['mysql_mha']['multi_environment_monitoring']
-          pod_config['nodes'] = search(:node, "mysql_mha_pod_name:#{pod_name}#{multi_env_search}")
+        if Chef::Config[:solo]
+          Chef::Log.warn('This recipe uses search. Chef Solo does not support search.')
         else
-          pod_config['nodes'] = search(:node, "mysql_mha_pod_name:#{pod_name} AND chef_environment:#{node.chef_environment}")
+          multi_env = node['mysql_mha']['monitored_environments']
+          multi_env_search = multi_env.empty? ? '' : ' AND (chef_environment:' + multi_env.join(' OR chef_environment:') + ')'
+
+          if node['mysql_mha']['multi_environment_monitoring']
+            pod_config['nodes'] = search(:node, "mysql_mha_pod_name:#{pod_name}#{multi_env_search}")
+          else
+            pod_config['nodes'] = search(:node, "mysql_mha_pod_name:#{pod_name} AND chef_environment:#{node.chef_environment}")
+          end
         end
 
         if pod_config['nodes'].empty?
