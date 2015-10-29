@@ -40,3 +40,22 @@ file '/tmp/master_flush_logs_done' do
   mode 0755
   action :nothing
 end
+
+# During the first converge of master we assign the master VIP, afterwards
+# its controlled through MHA
+bash 'writer VIP :assign during first run' do
+  user 'root'
+  code <<-EOH
+  ip addr add #{node["mysql"]["mha"]["writer_vip_cidr"]} dev #{node["mysql"]["mha"]["cluster_interface"]}
+  arping -q -c 3 -A -I #{node["mysql"]["mha"]["cluster_interface"]} #{node["mysql"]["mha"]["writer_vip"]}
+  EOH
+  notifies :create, 'file[/tmp/master_writer_vip_done]', :immediately
+  not_if { File.exist?('/tmp/master_writer_vip_done') }
+end
+
+file '/tmp/master_writer_vip_done' do
+  owner 'root'
+  group 'root'
+  mode 0755
+  action :nothing
+end

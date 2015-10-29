@@ -27,12 +27,17 @@ default["mysql"]["root_password"] = "root"
 default["mysql"]["replication"]["user"] = "repl"
 default["mysql"]["replication"]["password"] = "repl"
 
-# MySQL MHA credentials
+# MySQL MHA access
 default["mysql"]["mha"]["user"] = "mha"
 default["mysql"]["mha"]["password"] = "mha"
 
 # Setup the barebone attribute used within the cookbook
 default['mysql_replication'] = Hash.new
+
+# This is needed temporarily for the first converge
+default["mysql"]["mha"]["writer_vip_cidr"] = "192.168.30.100/24"
+default["mysql"]["mha"]["writer_vip"] = "192.168.30.100"
+default["mysql"]["mha"]["cluster_interface"] = "eth1"
 
 # MySQL configuration
 # GENERAL #
