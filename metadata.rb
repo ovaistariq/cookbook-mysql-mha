@@ -13,5 +13,5 @@ depends 'user'
 depends 'yum-epel', '<= 0.6.0'
 depends 'zap', '>= 0.6.0'
 
-supports 'centos', '>= 5.10'
-supports 'redhat', '>= 5.10'
+supports 'centos', '~> 6.3'
+supports 'redhat', '~> 6.3'
