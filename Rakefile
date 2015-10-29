@@ -90,7 +90,7 @@ desc 'Clean up generated files'
 task cleanup: ['cleanup:kitchen_destroy']
 
 desc 'Run full integration'
-task integration: ['integration:vagrant_setup', 'integration:vagrant_verify', 'cleanup:kitchen_destroy']
+task integration: ['cleanup:kitchen_destroy', 'integration:vagrant_setup', 'integration:vagrant_verify', 'cleanup:kitchen_destroy']
 
 # Default
 task default: ['style', 'spec', 'integration', 'cleanup']
