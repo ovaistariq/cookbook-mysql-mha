@@ -1,5 +1,7 @@
 mysql-mha Cookbook
 ==================
+
+[![Join the chat at https://gitter.im/ovaistariq/cookbook-mysql-mha](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ovaistariq/cookbook-mysql-mha?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Cookbook Version](https://img.shields.io/cookbook/v/mysql-mha.svg)](https://supermarket.chef.io/cookbooks/mysql-mha)
 
 Deploys [MHA](https://code.google.com/p/mysql-master-ha/) and [MHA Helper](https://github.com/ovaistariq/mha-helper) to manage failover of MySQL replication clusters. MHA helper is a Python module that supplements in doing proper failover using MHA.
