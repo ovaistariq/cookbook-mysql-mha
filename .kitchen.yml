@@ -34,8 +34,8 @@ suites:
     run_list:
       - recipe[base_test_setup]
       - recipe[mysql_replication::client]
-      - recipe[base_test_setup::sysbench]
       - recipe[mysql-mha::manager]
+      - recipe[base_test_setup::sysbench]
     attributes:
     provisioner:
       client_rb:
