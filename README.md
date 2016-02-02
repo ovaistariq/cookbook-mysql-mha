@@ -75,6 +75,7 @@ The latest version of knife supports reading data bags from a file and automatic
   "report_email": "ovaistariq@gmail.com",
   "smtp_host": "localhost",
   "requires_sudo": "yes",
+  "super_read_only": "no",
   "cluster_interface": "eth1"
 }
 ```
