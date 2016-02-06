@@ -123,6 +123,7 @@ mysql_pods.each do |pod_config|
   mha_config_ini['server default']['user']                            = pod_config['mysql']['user']
   mha_config_ini['server default']['password']                        = pod_config['mysql']['password']
   mha_config_ini['server default']['ssh_user']                        = pod_config['remote_user']['id']
+  mha_config_ini['server default']['ssh_options']                     = "'-i #{ssh_key_path}'"
   mha_config_ini['server default']['repl_user']                       = pod_config['mysql']['repl_user']
   mha_config_ini['server default']['repl_password']                   = pod_config['mysql']['repl_password']
   mha_config_ini['server default']['remote_workdir']                  = remote_workdir
