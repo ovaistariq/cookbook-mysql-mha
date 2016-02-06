@@ -57,18 +57,6 @@ mysql_mha_sshkey 'mha ssh private key :create' do
   username pod_config['remote_user']['id']
 end
 
-# Add host keys to known_hosts and ssh auth params to ssh-config
-pod_config['nodes'].each do |mysql_node|
-  # For each of the hosts we add the remote user and ssh private key path
-  # to ssh config so that password-less SSH login works
-  [ mysql_node['hostname'], mysql_node['fqdn'], mysql_node['ipaddress'] ].each do |host|
-    ssh_config host do
-      options 'User' => pod_config['remote_user']['id'], 'IdentityFile' => ssh_key_path
-      user pod_config['remote_user']['id']
-    end
-  end
-end
-
 ## The working directory on the nodes being managed by MHA
 # Create the base working directory used by MHA Manager
 # The directory used by MHA Manager as its working directory
