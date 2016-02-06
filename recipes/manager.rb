@@ -162,15 +162,6 @@ mysql_pods.each do |pod_config|
     # Right now we don't have anything in host specific sections in MHA
     # Helper config so we just create empty sections in INI file
     mha_helper_config_ini[mysql_node['hostname']] = Hash.new
-
-    # For each of the hosts we add the remote user and ssh private key path
-    # to ssh config so that password-less SSH login works
-    [ mysql_node['hostname'], mysql_node['fqdn'], mysql_node['ipaddress'] ].each do |host|
-      ssh_config host do
-        options 'User' => pod_config['remote_user']['id'], 'IdentityFile' => ssh_key_path
-        user 'root'
-      end
-    end
   end
 
   # Write the MHA config file for the replication cluster
