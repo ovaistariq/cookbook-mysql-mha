@@ -143,6 +143,7 @@ mysql_pods.each do |pod_config|
   mha_helper_config_ini['default']['requires_arping']   = pod_config['requires_arping']
   mha_helper_config_ini['default']['super_read_only']   = pod_config['super_read_only']
   mha_helper_config_ini['default']['cluster_interface'] = pod_config['cluster_interface']
+  mha_helper_config_ini['default']['kill_after_timeout']= pod_config['kill_after_timeout']
 
   # Next we have a section per node in the pod [server1], [server2], ..., [serverN]
   i = 0

@@ -22,5 +22,6 @@
   "requires_sudo": "yes",
   "requires_arping": "yes",
   "super_read_only": "no",
-  "cluster_interface": "eth1"
+  "cluster_interface": "eth1",
+  "kill_after_timeout": 5
 }
