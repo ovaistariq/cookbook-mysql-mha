@@ -140,6 +140,7 @@ mysql_pods.each do |pod_config|
   mha_helper_config_ini['default']['report_email']      = pod_config['report_email']
   mha_helper_config_ini['default']['smtp_host']         = pod_config['smtp_host']
   mha_helper_config_ini['default']['requires_sudo']     = pod_config['requires_sudo']
+  mha_helper_config_ini['default']['requires_arping']   = pod_config['requires_arping']
   mha_helper_config_ini['default']['super_read_only']   = pod_config['super_read_only']
   mha_helper_config_ini['default']['cluster_interface'] = pod_config['cluster_interface']
 
