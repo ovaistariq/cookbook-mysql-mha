@@ -38,7 +38,7 @@ default["mysql_mha"]["node"]["version"] = value_for_platform(
   }
 )
 
-default["mysql_mha"]["helper"]["version"] = '0.4.1-1'
+default["mysql_mha"]["helper"]["version"] = '0.4.2-1'
 
 default["mysql_mha"]["manager"]["additional_packages"] = %w(perl-Config-Tiny perl-Log-Dispatch perl-Parallel-ForkManager perl-Mail-Sendmail perl-Mail-Sender)
 default["mysql_mha"]["node"]["additional_packages"] = %w(perl-DBD-MySQL)
